@@ -1,6 +1,6 @@
 # CanadaLogin Release Notes Generator
 
-Tooling for generating weekly CanadaLogin release notes from the source repositories' Git history — no manual copy/paste required. Produces Slack-ready Markdown, an accessible HTML report styled with a muted Government of Canada palette, and a PDF rendered from that HTML.
+Tooling for generating CanadaLogin release notes from the source repositories' Git history for any date range — no manual copy/paste required. Produces Slack-ready Markdown, an accessible HTML report styled with a muted Government of Canada palette, and a PDF rendered from that HTML.
 
 ## What it covers
 
@@ -12,8 +12,8 @@ Reports summarize what was deployed to Test, Staging, and Production for the Can
 
 For each reporting period the generator produces two report families:
 
-- **All environments** — `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.{md,html,pdf}`
-- **Production only** — `canadalogin-weekly-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.{md,html,pdf}`
+- **All environments** — `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.{md,html,pdf}`
+- **Production only** — `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.{md,html,pdf}`
 
 ## Data sources
 
@@ -24,11 +24,11 @@ The generator only performs read-only Git and GitHub operations. It never writes
 
 ## How to run it
 
-The skill is described in [.github/skills/weekly-release-notes/SKILL.md](.github/skills/weekly-release-notes/SKILL.md) and is intended to be invoked by a GitHub Copilot agent inside VS Code (or by a GitHub Actions workflow — see below).
+The skill is described in [.github/skills/release-notes/SKILL.md](.github/skills/release-notes/SKILL.md) and is intended to be invoked by a GitHub Copilot agent inside VS Code (or by a GitHub Actions workflow — see below).
 
 1. Open this repository in VS Code and **Reopen in Container** (uses the dev container in [.devcontainer/](.devcontainer/README.md)).
 2. Ensure GitHub access is available inside the container. The skill clones each source repo with SSH first (`git@github.com:cds-snc/<repo>.git`) and falls back to HTTPS. In GitHub Actions the workflow token is used for HTTPS.
-3. Ask the Copilot agent to run the `weekly-release-notes` skill, optionally passing a date range such as `2026-08-17 to 2026-08-21`. Without a range, the previous seven complete UTC calendar days are used.
+3. Ask the Copilot agent to run the `release-notes` skill, optionally passing a date range such as `2026-08-17 to 2026-08-21`. Without a range, the previous seven complete UTC calendar days are used.
 4. The generator writes six files at the repo root — the two Markdown/HTML/PDF families listed above.
 
 The dev container ships headless Chromium, `gh`, `jq`, `openssh-client`, and Python 3 so it can clone the source repos, parse deployed-versions JSON, and render the HTML report to PDF without any additional setup.
@@ -44,8 +44,8 @@ The dev container ships headless Chromium, `gh`, `jq`, `openssh-client`, and Pyt
 
 ## Repository layout
 
-- [.github/skills/weekly-release-notes/SKILL.md](.github/skills/weekly-release-notes/SKILL.md) — the full skill definition (inputs, date range rules, environment sources, procedure, output format, and quality checks).
+- [.github/skills/release-notes/SKILL.md](.github/skills/release-notes/SKILL.md) — the full skill definition (inputs, date range rules, environment sources, procedure, output format, and quality checks).
 - [.devcontainer/](.devcontainer/README.md) — dev container that provides Chromium, `gh`, `jq`, Python 3, and an SSH client.
-- `.gitignore` — excludes generated `canadalogin-weekly-release-notes-*.{md,html,pdf}` artifacts.
+- `.gitignore` — excludes generated `canadalogin-release-notes-*.{md,html,pdf}` artifacts.
 
 Note that default community health files are maintained at https://github.com/cds-snc/.github

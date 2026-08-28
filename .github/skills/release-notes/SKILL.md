@@ -1,11 +1,11 @@
 ---
-name: weekly-release-notes
-description: "Generate weekly release notes for the CanadaLogin repositories using Release Please, Conventional Commits, Git history, .deployed_versions environment files, and the IBM deployment state document. Use when asked for weekly releases, deployment summaries, or what changed in test, staging, and production."
+name: release-notes
+description: "Generate CanadaLogin release notes for a specified date range (defaulting to the previous seven complete UTC days) using Release Please, Conventional Commits, Git history, .deployed_versions environment files, and the IBM deployment state document. Use when asked for release notes, deployment summaries, or what changed in test, staging, and production."
 argument-hint: "Optional: provide a date range such as 2026-08-17 to 2026-08-23"
 user-invocable: true
 ---
 
-# Weekly Release Notes
+# Release Notes
 
 Generate accurate all-environments and Production-only Markdown, HTML, and PDF reports for these repositories:
 
@@ -76,7 +76,7 @@ For `gc-signin-ibm-configuration`, use `Deployment-State.md` exclusively from th
 
 Parse each table row as a separate component. Use the `File` value as the component name and the `staging Tag`/`staging Date` and `prod Tag`/`prod Date` values as Staging and Production evidence. A `-` value means `Unavailable`, not version zero or no change. Do not collapse components within a category: each component can be released and promoted independently.
 
-IBM Test is represented by the `main` branch, not by a deployment-state column. Determine the Test state and weekly changes from committed `main` history at the reporting-period boundaries. Match a state-table component to the changed configuration file by normalized component name within its category. For example, `Flows/gcs_flows_signup.json` maps to the `gcs_flows_signup` row; also inspect category directories and nested filenames when the component name is not a direct filename match. For each matched component, report the `main` commit SHA/date and the merged change or PR that put the file into Test. Use a Release Please version only when an exact tag or changelog entry can be tied to that component change; otherwise identify Test by the `main` commit rather than inventing a version. Never infer IBM Test from Staging or Production.
+IBM Test is represented by the `main` branch, not by a deployment-state column. Determine the Test state and in-period changes from committed `main` history at the reporting-period boundaries. Match a state-table component to the changed configuration file by normalized component name within its category. For example, `Flows/gcs_flows_signup.json` maps to the `gcs_flows_signup` row; also inspect category directories and nested filenames when the component name is not a direct filename match. For each matched component, report the `main` commit SHA/date and the merged change or PR that put the file into Test. Use a Release Please version only when an exact tag or changelog entry can be tied to that component change; otherwise identify Test by the `main` commit rather than inventing a version. Never infer IBM Test from Staging or Production.
 
 ## Procedure
 
@@ -119,8 +119,8 @@ IBM Test is represented by the `main` branch, not by a deployment-state column. 
 8. Do not claim that a version was deployed during the period merely because it is currently in an environment file or state table. A deployment during the period requires dated file history, a dated state-table entry, or an authoritative GitHub deployment/release record.
 9. If a repository or IBM state category has no deployment data, include a short note only when it prevents determining what was deployed. Do not clutter the report with unchanged or unavailable environments.
 10. If the working tree has uncommitted changes, do not use them as historical evidence; mention that the report is based on committed history.
-11. Write the completed reports to the workspace root as `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.md`, `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.html`, and `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.pdf`, using the supplied inclusive dates. Create all three files after all evidence and quality checks are complete. If any file already exists, replace it with the newly generated report for the same date range.
-12. Generate a second production-only report from the same evidence. Use `canadalogin-weekly-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.md`, `canadalogin-weekly-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.html`, and `canadalogin-weekly-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.pdf`. The production-only report must include only Production deployment status and Production changes for every scoped repository; omit Test and Staging headings, entries, summaries, and notes entirely. Its title must identify it as `CanadaLogin Production Release Notes` and its summary must describe only Production activity.
+11. Write the completed reports to the workspace root as `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.md`, `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.html`, and `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.pdf`, using the supplied inclusive dates. Create all three files after all evidence and quality checks are complete. If any file already exists, replace it with the newly generated report for the same date range.
+12. Generate a second production-only report from the same evidence. Use `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.md`, `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.html`, and `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.pdf`. The production-only report must include only Production deployment status and Production changes for every scoped repository; omit Test and Staging headings, entries, summaries, and notes entirely. Its title must identify it as `CanadaLogin Production Release Notes` and its summary must describe only Production activity.
 
 ## Output Format
 
@@ -131,7 +131,7 @@ Each HTML report must contain the same factual content as its corresponding Mark
 Generate each PDF from its corresponding completed HTML report using a standards-compliant browser print-to-PDF process. Preserve the HTML report's Government of Canada styling, page margins, readable typography, section separation, and accessibility-oriented contrast. Each PDF must contain the same factual content as its corresponding Markdown and HTML report and must not expose audit links or technical identifiers.
 
 ```markdown
-*CanadaLogin Weekly Release Notes*
+*CanadaLogin Release Notes*
 YYYY-MM-DD to YYYY-MM-DD
 
 AI-generated report.
@@ -221,7 +221,7 @@ Before returning the report, verify:
 - A deployment claim has dated Git evidence, a dated IBM state-table entry, or an authoritative GitHub record.
 - Release-only commits are not presented as product changes.
 - The date range, timezone, missing files, and assumptions are stated.
-- The final report is saved as `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.md` at the workspace root and is directly copyable into Slack.
-- The matching `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.html` report is saved at the workspace root and contains the same factual content in a self-contained accessible HTML layout.
-- The matching `canadalogin-weekly-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.pdf` report is saved at the workspace root, generated from the HTML report, and preserves its Government of Canada styling.
-- The production-only Markdown, HTML, and PDF reports use the `canadalogin-weekly-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD` filename prefix and contain no Test or Staging content.
+- The final report is saved as `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.md` at the workspace root and is directly copyable into Slack.
+- The matching `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.html` report is saved at the workspace root and contains the same factual content in a self-contained accessible HTML layout.
+- The matching `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.pdf` report is saved at the workspace root, generated from the HTML report, and preserves its Government of Canada styling.
+- The production-only Markdown, HTML, and PDF reports use the `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD` filename prefix and contain no Test or Staging content.
