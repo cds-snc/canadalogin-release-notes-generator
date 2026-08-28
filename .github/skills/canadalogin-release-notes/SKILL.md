@@ -1,5 +1,5 @@
 ---
-name: release-notes
+name: canadalogin-release-notes
 description: "Generate CanadaLogin release notes for a specified date range (defaulting to the previous seven complete UTC days) using Release Please, Conventional Commits, Git history, .deployed_versions environment files, and the IBM deployment state document. Use when asked for release notes, deployment summaries, or what changed in test, staging, and production."
 argument-hint: "Optional: provide a date range such as 2026-08-17 to 2026-08-23"
 user-invocable: true

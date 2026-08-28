@@ -1,6 +1,6 @@
 # CanadaLogin release-notes devcontainer
 
-This dev container provides the read-only tooling used by the CanadaLogin release-notes skill.
+This dev container provides the read-only tooling used by the `canadalogin-release-notes` skill.
 
 ## What's included
 
@@ -28,7 +28,7 @@ The workspace is mounted at `/workspaces/${localWorkspaceFolderBasename}` (for t
    - HTTPS: `gh auth login` (recommended default).
    - SSH: forward your SSH agent into the container or mount a key into `~/.ssh/`. The `accept-new` host policy avoids the first-connection prompt.
 
-The container starts without an SSH agent. SSH is only needed when the HTTPS clone fallback in the release-notes skill is exercised.
+The container starts without an SSH agent. SSH is only needed when the HTTPS clone fallback in the `canadalogin-release-notes` skill is exercised.
 
 ## PDF generation
 
