@@ -20,3 +20,7 @@ The skill is read-only against every source repo and wiki, and drops six files a
 - [.devcontainer/](.devcontainer/README.md) — dev container with headless Chromium (for PDF), `gh`, `jq`, `openssh-client`, and Python 3.
 
 Default community health files are maintained at https://github.com/cds-snc/.github.
+
+## Planned
+
+Wrap this skill in a GitHub Actions workflow that runs on a schedule (and on manual dispatch with a custom date range), commits or uploads the six generated files, and publishes an archive of past reports to GitHub Pages (or an equivalent static site) so the release notes are browsable in a single place instead of only inside the workspace.
