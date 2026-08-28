@@ -6,7 +6,9 @@ Covers the three CanadaLogin source repos: `canadalogin-migration` (Migration Ap
 
 ## Usage
 
-1. Open this repo in VS Code and **Reopen in Container**.
+**Prerequisites** — either VS Code with the Dev Containers extension and a local Docker-compatible runtime (Docker Desktop, Colima, Rancher, etc.), or a GitHub Codespace on this repo.
+
+1. Open this repo in VS Code and **Reopen in Container** (or open it in a Codespace).
 2. Ask the Copilot agent to run the `canadalogin-release-notes` skill, optionally with a date range (for example, `2026-08-17 to 2026-08-21`). Without a range it uses the previous seven complete UTC calendar days.
 
 The skill is read-only against every source repo and wiki, and drops six files at the repo root:
