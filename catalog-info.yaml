@@ -1,11 +1,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: project-template
-  description: Generic project template for new CDS repositories.
+  name: canadalogin-release-notes-generator
+  description: Copilot skill and dev container that generate CanadaLogin release notes (Slack Markdown, HTML, and PDF) for a given date range from source-repo Git history and the IBM deployment-state wiki.
   labels:
     license: MIT
 spec:
-  type: website
+  type: tool
   lifecycle: experimental
   owner: cds-snc
