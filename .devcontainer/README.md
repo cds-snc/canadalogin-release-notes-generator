@@ -9,7 +9,7 @@ Built on `mcr.microsoft.com/devcontainers/base:bookworm`, which already ships Gi
 - **GitHub CLI (`gh`)** — repository history and metadata over the GitHub API.
 - **OpenSSH client** — optional SSH access to GitHub as a fallback when HTTPS cloning fails. A `~/.ssh/config` entry for `github.com` with `StrictHostKeyChecking accept-new` is created for the `vscode` user.
 - **`jq`** — parsing `.deployed_versions/*.json` files.
-- **Chromium** (headless-capable) plus `fonts-liberation` and `fonts-noto-color-emoji` — HTML-to-PDF rendering of the generated reports. `$BROWSER` is set to `/usr/bin/chromium`.
+- **`ripgrep`** — fast recursive repository and report-content searches.
 - **Python 3** with `pip` and `venv` — helper scripts and virtual environments.
 
 Container environment:
@@ -30,18 +30,6 @@ The workspace is mounted at `/workspaces/${localWorkspaceFolderBasename}` (for t
 
 The container starts without an SSH agent. SSH is only needed when the HTTPS clone fallback in the `canadalogin-release-notes` skill is exercised.
 
-## PDF generation
-
-From inside the container, render a report HTML file to PDF with headless Chromium:
-
-```bash
-"$BROWSER" --headless --disable-gpu --no-pdf-header-footer \
-  --print-to-pdf=report.pdf \
-  "file://$PWD/report.html"
-```
-
-Adjust the paths to point at the generated report you want to convert.
-
 ## Read-only guarantee
 
-The source repositories and the IBM wiki must remain read-only. Only the generated Markdown, HTML, and PDF report artifacts should be written inside the workspace.
+The source repositories and the IBM wiki must remain read-only. Only the generated Markdown, HTML, `index.html`, and `.nojekyll` artifacts should be written inside the workspace.

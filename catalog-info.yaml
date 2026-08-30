@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: canadalogin-release-notes-generator
-  description: Copilot skill and dev container that generate CanadaLogin release notes (Slack Markdown, HTML, and PDF) for a given date range from source-repo Git history and the IBM deployment-state wiki.
+  description: Copilot skill and dev container that generate CanadaLogin release notes (regular Markdown and GCDS-based HTML) for a given date range from source-repo Git history and the IBM deployment-state wiki.
   labels:
     license: MIT
 spec:
