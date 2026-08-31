@@ -32,4 +32,4 @@ The container starts without an SSH agent. SSH is only needed when the HTTPS clo
 
 ## Read-only guarantee
 
-The source repositories and the IBM wiki must remain read-only. Only the generated Markdown, HTML, `index.html`, and `.nojekyll` artifacts should be written inside the workspace.
+The source repositories and the IBM wiki must remain read-only. Only the generated Markdown, HTML, and `index.html` artifacts should be written inside the workspace.

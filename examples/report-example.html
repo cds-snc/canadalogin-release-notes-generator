@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CanadaLogin Release Notes Example</title>
+  <title>CanadaLogin Test Release Notes Example</title>
   <link rel="stylesheet" href="https://cdn.design-system.canada.ca/@gcds-core/components@1.5.0/dist/gcds/gcds.css">
   <script type="module" src="https://cdn.design-system.canada.ca/@gcds-core/components@1.5.0/dist/gcds/gcds.esm.js"></script>
   <style>
@@ -276,7 +276,7 @@
 <body>
   <gcds-container size="large">
     <header class="report-header">
-      <gcds-heading tag="h1" character-limit="false">CanadaLogin Release Notes</gcds-heading>
+      <gcds-heading tag="h1" character-limit="false">CanadaLogin Test Release Notes</gcds-heading>
       <div class="header-meta">
         <gcds-text text-role="secondary">2026-08-22 to 2026-08-28</gcds-text>
       </div>
@@ -286,7 +286,7 @@
     <main>
       <section aria-labelledby="summary-title">
         <gcds-notice notice-role="info" notice-title="Summary" notice-title-tag="h2" id="summary-title">
-          <gcds-text margin-bottom="0">Migration App reached Production, Manage App advanced through Test, and IBM configuration updates improved sign-in, recovery, and sign-up experiences.</gcds-text>
+          <gcds-text margin-bottom="0">Manage App advanced through Test, while IBM configuration updates improved sign-in, recovery, and sign-up experiences. The report includes additional Test detail for validation.</gcds-text>
         </gcds-notice>
       </section>
 
@@ -299,45 +299,29 @@
         <gcds-grid class="app-grid" columns="1fr" gap="600">
           <article class="app-block" aria-labelledby="migration-title">
             <gcds-heading tag="h3" id="migration-title" margin-top="0">Migration App</gcds-heading>
-            <gcds-grid class="status-grid" columns-desktop="1fr 1fr 1fr" columns-tablet="1fr 1fr" columns="1fr" gap="300">
+            <gcds-grid class="status-grid" columns-desktop="1fr" columns-tablet="1fr" columns="1fr" gap="300">
               <div class="status-cell is-unchanged">
                 <span class="status-label">TEST</span>
                 <gcds-text><code>v1.12.14</code> unchanged</gcds-text>
               </div>
-              <div class="status-cell is-unchanged">
-                <span class="status-label">STAGING</span>
-                <gcds-text><code>v1.12.14</code> unchanged</gcds-text>
-              </div>
-              <div class="status-cell is-deployed">
-                <span class="status-label">PROD</span>
-                <gcds-text><code>v1.12.14</code> deployed 2026-08-25</gcds-text>
-              </div>
             </gcds-grid>
             <div class="app-change-group">
-              <p class="app-change-label">PROD changes</p>
+              <p class="app-change-label">TEST changes</p>
               <ul>
                 <li><gcds-text>The migration skip flow preserves the selected English or French language.</gcds-text></li>
                 <li><gcds-text>Sign-in guidance links to the current pages for updating a sign-in method.</gcds-text></li>
               </ul>
               <gcds-heading tag="h4" class="subsection-heading">Under the hood</gcds-heading>
-              <gcds-text>Security-relevant runtime dependencies were upgraded.</gcds-text>
+              <gcds-text>Test coverage now exercises the language-preserving skip path.</gcds-text>
             </div>
           </article>
 
           <article class="app-block" aria-labelledby="manage-title">
             <gcds-heading tag="h3" id="manage-title" margin-top="0">Manage App</gcds-heading>
-            <gcds-grid class="status-grid" columns-desktop="1fr 1fr 1fr" columns-tablet="1fr 1fr" columns="1fr" gap="300">
+            <gcds-grid class="status-grid" columns-desktop="1fr" columns-tablet="1fr" columns="1fr" gap="300">
               <div class="status-cell is-deployed">
                 <span class="status-label">TEST</span>
                 <gcds-text><code>v1.30.0</code> deployed 2026-08-24</gcds-text>
-              </div>
-              <div class="status-cell is-unchanged">
-                <span class="status-label">STAGING</span>
-                <gcds-text><code>v1.28.0</code> unchanged</gcds-text>
-              </div>
-              <div class="status-cell is-unchanged">
-                <span class="status-label">PROD</span>
-                <gcds-text><code>v1.28.0</code> unchanged</gcds-text>
               </div>
             </gcds-grid>
             <div class="app-change-group">
@@ -376,29 +360,6 @@
           </div>
         </div>
 
-        <div class="ibm-environment" aria-label="IBM Staging changes">
-          <div class="environment-heading">
-            <div class="status-cell is-deployed ibm-environment-status">
-              <span class="status-label">STAGING</span>
-            </div>
-          </div>
-          <div class="ibm-category">
-            <p class="ibm-category-title">Themes</p>
-            <ul><li><gcds-text>Sign In <code>v1.13.0</code> adds localized adaptive-authentication emails and locale-aware page tracking.</gcds-text></li></ul>
-          </div>
-        </div>
-
-        <div class="ibm-environment" aria-label="IBM Production changes">
-          <div class="environment-heading">
-            <div class="status-cell is-deployed ibm-environment-status">
-              <span class="status-label">PROD</span>
-            </div>
-          </div>
-          <div class="ibm-category">
-            <p class="ibm-category-title">Flows</p>
-            <ul><li><gcds-text>Sign Up Flow <code>v1.12.0.1</code> uses an exact username match when checking for an existing user during email OTP sign-up.</gcds-text></li></ul>
-          </div>
-        </div>
       </section>
 
       <section aria-labelledby="notes-title">
@@ -410,7 +371,7 @@
           <ul class="methodology-list">
             <li><gcds-text>The range is inclusive and uses UTC.</gcds-text></li>
             <li><gcds-text>Environment comparisons use committed state immediately before the reporting period.</gcds-text></li>
-            <li><gcds-text>IBM Test comes from main history; Staging and Production come from the complete deployment-state history.</gcds-text></li>
+            <li><gcds-text>This report covers committed Test evidence only.</gcds-text></li>
           </ul>
         </gcds-details>
         <gcds-text class="footer-note">This page is a visual reference for the release-notes skill. Keep report content factual and concise.</gcds-text>

@@ -1,33 +1,32 @@
 # CanadaLogin Release Notes Generator
 
-A Copilot skill and dev container that generate CanadaLogin release notes for any date range as regular Markdown and an accessible GCDS-based HTML report.
+A Copilot skill and dev container that generate CanadaLogin release notes for any date range as regular Markdown and accessible GCDS-based HTML reports.
 
-Covers the three CanadaLogin source repos: `canadalogin-migration` (Migration App), `canadalogin-user-selfservice-webapp` (Manage App), and `gc-signin-ibm-configuration` (IBM SaaS Configuration, Branding and Flows). Each run produces both an all-environments report and a production-only report at the workspace root.
+Covers the three CanadaLogin source repos: `canadalogin-migration` (Migration App), `canadalogin-user-selfservice-webapp` (Manage App), and `gc-signin-ibm-configuration` (IBM SaaS Configuration, Branding and Flows). Each run produces separate Test, Staging, and Production reports at the workspace root. Test and Staging reports retain additional evidence-backed detail useful to lower-environment audiences; the Production report remains concise.
 
 ## Usage
 
 **Prerequisites** — VS Code with the Dev Containers extension and a local Docker-compatible runtime (Docker Desktop, Colima, Rancher, etc.).
 
 1. Open this repo in VS Code and **Reopen in Container**.
-2. Ask the Copilot agent to run the `canadalogin-release-notes` skill, optionally with a date range (for example, `2026-08-17 to 2026-08-21`) and an optional cadence keyword (`weekly`, `bi-weekly`, or `monthly`) that splits the range into consecutive sub-reports — for example, `2026-07-01 to 2026-09-01 bi-weekly`. Without a range it uses the previous fourteen complete UTC calendar days; without a cadence it produces one report for the whole range.
+2. Ask the Copilot agent to run the `canadalogin-release-notes` skill, optionally with a date range (for example, `2026-08-17 to 2026-08-21`), cadence keyword (`weekly`, `bi-weekly`, or `monthly`), and environment (`test`, `staging`, or `prod`). For example, `2026-08-17 to 2026-08-21 staging` generates only the Staging reports, while `2026-08-17 to 2026-08-21` generates reports for all three environments. The environment can also be supplied without a date range, such as `prod`, which uses the default range. Without a cadence it produces one report for the whole range.
 
-The skill is read-only against every source repo and wiki, and drops six files at the repo root:
+The skill is read-only against every source repo and wiki. It drops the selected environment's Markdown and HTML reports, or all six report files when no environment is specified, plus `index.html` at the repo root:
 
-- `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.{md,html}`
-- `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.{md,html}`
-- `index.html` — a GitHub Pages–ready archive listing every report present at the repo root.
-- `.nojekyll` — disables Jekyll processing on GitHub Pages.
+- `canadalogin-release-notes-test-YYYY-MM-DD-to-YYYY-MM-DD.{md,html}`
+- `canadalogin-release-notes-staging-YYYY-MM-DD-to-YYYY-MM-DD.{md,html}`
+- `canadalogin-release-notes-production-YYYY-MM-DD-to-YYYY-MM-DD.{md,html}`
+- `index.html` — a portable archive listing every report present at the repo root.
 
-## Publishing to GitHub Pages or static relase notes website
+## Publishing to a static website
 
-This repo is not published to Pages or a static website. Publish the reports from a separate repository so the generator stays a clean, read-only tool.
+This repo is not itself a website. Publish the reports from a separate repository or static hosting service so the generator stays a clean, read-only tool. GitHub Pages is one example; any host that serves static HTML and Markdown files will work.
 
 1. Generate reports here by invoking the skill. Re-run for any additional date range you want to include. Each run rewrites `index.html` to cover every report currently at the repo root.
-2. Copy the following files into the site repo you have configured for GitHub Pages, preserving filenames:
+2. Copy the following files into the site repository or hosting directory, preserving filenames:
    - every `canadalogin-release-notes-*.html` and `canadalogin-release-notes-*.md`
    - `index.html`
-   - `.nojekyll`
-3. Commit and push in the site repo. GitHub Pages serves the reports directly; no build step is required because each HTML file loads its pinned GCDS assets from the official CDN.
+3. Deploy the files with your hosting provider. No build step is required because each HTML file loads its pinned GCDS assets from the official CDN.
 
 ## Where things live
 

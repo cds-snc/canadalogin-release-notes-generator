@@ -1,13 +1,13 @@
 ---
 name: canadalogin-release-notes
 description: "Generate CanadaLogin release notes for a specified date range (defaulting to the previous fourteen complete UTC days) with an optional weekly, bi-weekly, or monthly cadence that splits the range into separate reports. Uses Release Please, Conventional Commits, Git history, .deployed_versions environment files, and the IBM deployment state document. Use when asked for release notes, deployment summaries, or what changed in test, staging, and production."
-argument-hint: "Optional: provide a date range (e.g., 2026-08-17 to 2026-08-23) and an optional cadence (weekly, bi-weekly, or monthly)"
+argument-hint: "Optional: provide a date range (e.g., 2026-08-17 to 2026-08-23), cadence (weekly, bi-weekly, or monthly), and environment (test, staging, or prod)"
 user-invocable: true
 ---
 
 # Release Notes
 
-Generate accurate all-environments and Production-only Markdown and GCDS-based HTML reports for these three repositories:
+Generate accurate Test, Staging, and Production Markdown and GCDS-based HTML reports for these three repositories:
 
 | Repository directory | Report name |
 |---|---|
@@ -15,16 +15,17 @@ Generate accurate all-environments and Production-only Markdown and GCDS-based H
 | `canadalogin-user-selfservice-webapp` | Manage App |
 | `gc-signin-ibm-configuration` | IBM SaaS Configuration, Branding and Flows |
 
-The report must distinguish code released from code deployed. Lead with what was deployed to each environment. For every deployment, describe the user-facing changes introduced since the version or component state that existed immediately before the start date. Use the repository's Release Please changelog, `.deployed_versions` history for the two web applications, and the complete Git history of the IBM deployment wiki page for the IBM configuration repository.
+Each report must distinguish code released from code deployed. Lead with what was deployed to the report's environment. For every deployment, describe the user-facing changes introduced since the version or component state that existed immediately before the start date. Use the repository's Release Please changelog, `.deployed_versions` history for the two web applications, and the complete Git history of the IBM deployment wiki page for the IBM configuration repository.
 
 ## Inputs and Date Range
 
 1. If the user supplies a start and end date, use that inclusive range. Otherwise use the previous fourteen complete calendar days in UTC. State the selected range in the report.
 2. If the user supplies an optional cadence keyword (`weekly`, `bi-weekly`, or `monthly`, case-insensitive) after the range — for example, `2026-07-01 to 2026-09-01 bi-weekly` — split the requested range into consecutive inclusive sub-ranges of that length and generate one full set of reports per sub-range. Without a cadence keyword, treat the whole range as a single sub-range and generate one set of reports. Sub-ranges are date-shifted from the requested start date: `weekly` = 7 days per sub-range, `bi-weekly` = 14 days per sub-range, `monthly` = one calendar month per sub-range (start-day-shifted; for example, 2026-07-15 → 2026-08-14). The final sub-range may be shorter when the requested range does not divide evenly; clamp its end to the requested (or clamped) end date. Skip a sub-range whose start date is strictly after the effective end date.
-3. Use the last committed state immediately before each sub-range's start date as that sub-range's comparison baseline. Every sub-range independently answers "what was deployed in this sub-range?" and "what changed compared with what was there before it?". Do not reuse baselines across sub-ranges.
-4. If the requested (or default) end date is later than the current UTC calendar date, clamp the effective end date to the current UTC date before splitting into sub-ranges. Use the clamped date for every history lookup, keep the original filename dates for the sub-range that contains the clamped end, and add a Notes bullet in that sub-range's reports stating the end date was clamped.
-5. Treat the three repositories and the IBM wiki as sibling directories of the current workspace. If a sibling is missing or is not a Git repository, clone it with `fetch-depth: 0` (complete history). Try `git@github.com:cds-snc/<REPO_NAME>.git` first; fall back to `https://github.com/cds-snc/<REPO_NAME>.git`, using a locally configured `gh` or credential helper when the repository is private. If the workspace parent is read-only (for example `/workspaces/` in a dev container), clone to `$HOME/repos/<REPO_NAME>` — and `$HOME/repos/gc-signin-ibm-configuration.wiki` for the wiki — and use that path for all reads. Fail only if neither SSH nor HTTPS succeeds.
-6. Use read-only Git and GitHub operations. Never push, commit, tag, create or delete branches, create or update releases, open or modify PRs or issues, dispatch workflows, or modify source files, changelogs, deployment files, or wiki pages. The only files this skill may create or update are the generated Markdown and HTML reports, `index.html`, and `.nojekyll` at the workspace root.
+3. If the user supplies an optional environment argument (`test`, `staging`, or `prod`, case-insensitive), generate reports only for that environment. Normalize `prod` to the Production environment and the `production` filename stem. If no environment argument is supplied, generate reports for all three environments. Accept the environment argument with or without a date range or cadence; do not infer an environment from other wording. If an environment value is supplied outside this set, ask the user to choose `test`, `staging`, or `prod` rather than guessing.
+4. Use the last committed state immediately before each sub-range's start date as that sub-range's comparison baseline. Every sub-range independently answers "what was deployed in this sub-range?" and "what changed compared with what was there before it?". Do not reuse baselines across sub-ranges.
+5. If the requested (or default) end date is later than the current UTC calendar date, clamp the effective end date to the current UTC date before splitting into sub-ranges. Use the clamped date for every history lookup, keep the original filename dates for the sub-range that contains the clamped end, and add a Notes bullet in that sub-range's reports stating the end date was clamped.
+6. Treat the three repositories and the IBM wiki as sibling directories of the current workspace. If a sibling is missing or is not a Git repository, clone it with `fetch-depth: 0` (complete history). Try `git@github.com:cds-snc/<REPO_NAME>.git` first; fall back to `https://github.com/cds-snc/<REPO_NAME>.git`, using a locally configured `gh` or credential helper when the repository is private. If the workspace parent is read-only (for example `/workspaces/` in a dev container), clone to `$HOME/repos/<REPO_NAME>` — and `$HOME/repos/gc-signin-ibm-configuration.wiki` for the wiki — and use that path for all reads. Fail only if neither SSH nor HTTPS succeeds.
+7. Use read-only Git and GitHub operations. Never push, commit, tag, create or delete branches, create or update releases, open or modify PRs or issues, dispatch workflows, or modify source files, changelogs, deployment files, or wiki pages. The only files this skill may create or update are the generated Markdown and HTML reports and `index.html` at the workspace root.
 
 ## Environment Sources
 
@@ -71,9 +72,9 @@ Use friendly names for IBM components. Keep the technical source identifier avai
 
 ## Procedure
 
-Run steps 1–9 once per sub-range defined in Inputs and Date Range, using that sub-range's inclusive dates as the reporting period. Step 10 runs once, after every sub-range has produced its four report files.
+Run steps 1–9 once per selected environment and sub-range defined in Inputs and Date Range, using that sub-range's inclusive dates as the reporting period. When no environment was selected, run them for Test, Staging, and Production. Step 10 runs once, after every sub-range has produced the reports for the selected environment(s).
 
-1. **Determine web-app environment state.** For each web app, read the version at the start of the period and at the end from the default branch (`git show <default-branch>:<file>` or the closest commit at or before those dates), and list default-branch commits that touched each environment file during the period. Those commits are deployment evidence when they represent a state change.
+1. **Determine web-app environment state.** For each web app, read the version for the selected environment at the start of the period and at the end from the default branch (`git show <default-branch>:<file>` or the closest commit at or before those dates), and list default-branch commits that touched that environment file during the period. Those commits are deployment evidence when they represent a state change.
 2. **Determine IBM state.** Inspect every revision of the IBM wiki deployment-state page during the period, including the closest snapshot before the period, the first snapshot in the period, and the final snapshot at or before the period end. The dated table entries are deployment evidence; the document's auto-generated timestamp is document metadata, not proof of change. Preserve revision date, author, commit, and page diff as internal evidence only. Independently, inspect `main` history at the period boundaries and list commits during the period that changed files under IBM component categories — those represent Test changes. Map each changed Test file to a state-table component by category and normalized name when a row exists; otherwise derive the friendly component from category and path (Test only). Keep the friendly category and component name attached to every version — a release of one component must not be described as a release of the whole IBM repository.
 3. **Compute deltas per component.** For every deployment that changed during the period, compare the pre-period state with the newly deployed state and summarize the intervening delta, even when the deployment skipped intermediate releases. For each candidate note, inspect the corresponding commit diff and changed files — not only the changelog subject — and trace it to a concrete implementation or configuration change before including it. For web apps, use `CHANGELOG.md` sections (Features, Bug Fixes, Performance Improvements, Code Refactoring, Tests, Miscellaneous Chores, Continuous Integration, Documentation, Code Style); accept `1.2.3` and `v1.2.3` heading forms. If no matching changelog entry exists, use the commits between the previous and new release tag, preferring merged PR titles from `gh pr list` when authenticated. For IBM Themes, inspect both the matching theme configuration and any related branding files changed between the two tags, and attribute the note to the specific Theme component when the files allow it. For IBM Attributes, Flows, and Policies, use path-restricted tag-to-tag comparison. If a component-specific diff is not available after all repository-history lookups, omit the component change entry rather than inventing a summary. If a deployment tag is a hotfix or patch tag, identify and compare its confirmed base tag first. If the deployment-state page does not preserve the pre-period component state, resolve it from the full wiki page history, the component's deployment history, the closest earlier state-document snapshot, the tag ancestry, or the nearest base tag — keep this comparison internal.
 4. **Drop reverted work.** Check the full history through the end of the period for reversions. Exclude any change whose net effect was undone in the period, even if the original commit, release, or IBM tag appears in the interval. Compare the effective end-of-period state with the pre-period baseline; only mention an introduced-and-reverted change when a subsequent non-reverting change restored a distinct final behavior that remains at period end.
@@ -83,18 +84,20 @@ Run steps 1–9 once per sub-range defined in Inputs and Date Range, using that 
 
    Exclude from both tiers: routine minor/patch dependency bumps with no runtime impact, GitHub Actions version-only bumps, dev-tooling updates (linters, formatters, editorconfig), Renovate/Dependabot lock-file maintenance without a stated security or behaviour reason, documentation-only edits unless they change user-visible content, and any content covered by Scope Exclusions.
 
-   Keep the Under the hood list short — a few high-signal bullets per environment at most. Omit it entirely when nothing qualifies.
-6. **Consolidate promotions and overlapping bullets.** Explain identical release content across environments briefly, for example `v1.30.0 deployed to Test; Staging and Production unchanged.` Combine overlapping bullets that describe the same underlying change, and remove a generic parent bullet when its detailed children already describe the complete behavior.
+    Keep the Under the hood list short and high-signal for Production. Test and Staging reports may retain a fuller set of concrete implementation, configuration, testing, observability, and operational details when they help their lower-environment audience understand what is being validated. Omit the list entirely when nothing qualifies.
+6. **Consolidate within each environment report.** Each report covers one environment only, so do not summarize promotions or unchanged states from the other environments. Combine overlapping bullets that describe the same underlying change, and remove a generic parent bullet when its detailed children already describe the complete behavior. In Test and Staging reports, keep distinct, evidence-backed details when they support validation or troubleshooting instead of collapsing them into a release-level summary.
 7. **Require dated deployment evidence.** A deployment during the period requires dated Git file history, a dated state-table entry, or an authoritative GitHub deployment/release record. A version currently present in an environment file or state table is not by itself evidence of an in-period deployment.
 8. **Working tree.** If any repository has uncommitted changes, do not use them as historical evidence. Add a Notes bullet stating the report is based on committed history.
-9. **Write the artifacts.** For each sub-range, after all evidence and quality checks are complete, write four files to the workspace root using the sub-range's inclusive dates in the filename, replacing any existing files with the same names:
-   - `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.md`
-   - `canadalogin-release-notes-YYYY-MM-DD-to-YYYY-MM-DD.html`
-   - `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.md`
-   - `canadalogin-release-notes-production-only-YYYY-MM-DD-to-YYYY-MM-DD.html`
+9. **Write the artifacts.** For each selected environment and sub-range, after all evidence and quality checks are complete, write that environment's Markdown and HTML files to the workspace root using the sub-range's inclusive dates in the filename, replacing any existing files with the same names. With no environment selector, write all six files per sub-range:
+    - `canadalogin-release-notes-test-YYYY-MM-DD-to-YYYY-MM-DD.md`
+    - `canadalogin-release-notes-test-YYYY-MM-DD-to-YYYY-MM-DD.html`
+    - `canadalogin-release-notes-staging-YYYY-MM-DD-to-YYYY-MM-DD.md`
+    - `canadalogin-release-notes-staging-YYYY-MM-DD-to-YYYY-MM-DD.html`
+    - `canadalogin-release-notes-production-YYYY-MM-DD-to-YYYY-MM-DD.md`
+    - `canadalogin-release-notes-production-YYYY-MM-DD-to-YYYY-MM-DD.html`
 
-   The production-only report contains only Production status and Production changes for every repository. Its title is `CanadaLogin Production Release Notes` (no colon), its summary describes only Production activity, and it omits Test and Staging headings, entries, summaries, and notes entirely.
-10. **Regenerate the archive.** After every sub-range has been written, scan the workspace root for every `canadalogin-release-notes-*.html` file, group by date range (up to one all-environments and one production-only per range), and sort newest first by end date, then start date. Rewrite `index.html` from `examples/index-example.html`, preserving its document structure, GCDS component choices, header metadata, semantic sections, archive-entry layout, and inline style block. Replace the sample archive entries with one entry per discovered date range: render the range as a heading and list the available formats as relative links (HTML and Markdown for each variant), omitting formats that are not present on disk. Write a zero-byte `.nojekyll` at the workspace root. Replace `index.html` and `.nojekyll` on every run. Do not delete existing report files, and do not publish these artifacts from this repository — they are copied manually into a separate GitHub Pages site.
+    The Test report contains only Test status and Test changes for every repository. Its title is `CanadaLogin Test Release Notes` (no colon), its summary describes only Test activity, and its Notes describe only Test evidence and scope. The Staging report follows the same rules with `CanadaLogin Staging Release Notes`. The Production report uses the existing `CanadaLogin Production Release Notes` title and contains only Production status, Production changes, and Notes about Production activity. No report includes headings, entries, summaries, or notes for another environment. When an environment selector is supplied, do not create reports for the other environments.
+10. **Regenerate the archive.** After every sub-range has been written, scan the workspace root for every `canadalogin-release-notes-*.html` file, group by date range (up to one Test, one Staging, and one Production report per range), and sort newest first by end date, then start date. Rewrite `index.html` from `examples/index-example.html`, preserving its document structure, GCDS component choices, header metadata, semantic sections, archive-entry layout, and inline style block. Replace the sample archive entries with one entry per discovered date range: render the range as a heading and list the available formats as relative links (HTML and Markdown for Test, Staging, and Production), omitting formats that are not present on disk. Replace `index.html` on every run. Do not delete existing report files, and do not publish these artifacts from this repository — they are copied manually to a static hosting site.
 
 ## Writing Style
 
@@ -123,17 +126,18 @@ Only claim benefits the implementation evidence supports. Do not infer accessibi
 
 ## Output Format
 
-Return links to all four dated files. The Markdown reports use conventional `#` and `##` headings, ordinary Markdown lists, tables only when they improve comparison, and inline code for versions. Do not add a preamble or commentary around the Markdown content.
+Return links to every dated file generated for the selected environment(s). With no environment selector, return links to all six dated files. The Markdown reports use conventional `#` and `##` headings, ordinary Markdown lists, tables only when they improve comparison, and inline code for versions. Do not add a preamble or commentary around the Markdown content.
 
-Each HTML report contains the same factual content as its Markdown counterpart in an accessible GCDS document. Use `examples/report-example.html` as the template — start from its document structure, pinned CDN links, component choices, class names, and style block. Change the report-specific title, date, attribution, summary, status content, change content, and methodology notes; do not redesign the page.
+Each HTML report contains the same factual content as its Markdown counterpart in an accessible GCDS document. Use `examples/report-example.html` as the template — start from its document structure, pinned CDN links, component choices, class names, and style block. Change the report-specific environment title, date, attribution, summary, status content, change content, and methodology notes; do not redesign the page.
 
-HTML structure to preserve:
+HTML structure to preserve. The source example may show the complete visual pattern, but every generated file renders only its named environment. The complete status-grid instruction below applies to the source styling only:
 
 - Plain report header with a GCDS `h1`, the date on its own line, and `AI-GENERATED REPORT.` on its own line. No hero banner, masthead, decorative banner, or product strip.
 - Summary in `gcds-notice`. Use `gcds-heading` and `gcds-text` for body content. Application sections use the single-column `gcds-grid`. Preserve the blue top accent on each `.app-block` and the IBM `.ibm-block`.
+- Each generated report contains only one environment. The source template's status-grid styling is retained for visual reference; generated output renders only the status cell for its named environment and never includes another environment's status, changes, or summary.
 - All three web-app status cells together in the existing status grid. Apply `.is-deployed` when the status says `deployed`, `.is-unchanged` when it says `unchanged`; use neutral styling for unavailable states. The accent describes the status text, not the environment name — Production is not automatically green.
-- After each app status grid, put included change bullets in labelled groups (`TEST changes`, `STAGING changes`, `PROD changes`). Never merge Staging and Production changes into one unlabelled app-level list. Omit groups for environments with no included changes. Place qualifying Under the hood content inside the same environment change group, after that environment's user-facing bullets; never render it as an app-level subsection detached from an environment.
-- IBM section as the same-sized GCDS `h3` as the app titles, with its blue top accent. Each IBM environment has its own `.ibm-environment` block and compact status cell. Apply `.is-deployed` when that environment has one or more included component changes and `.is-unchanged` when it has none. Preserve the category headings and list changed components under environment and category.
+- After each app status cell, put included change bullets in the labelled group for the report's environment (`TEST changes`, `STAGING changes`, or `PROD changes`). Never include another environment's status, changes, or summary. Place qualifying Under the hood content inside the same environment change group, after that environment's user-facing bullets; never render it as an app-level subsection detached from the environment.
+- IBM section as the same-sized GCDS `h3` as the app titles, with its blue top accent. Include only the report's `.ibm-environment` block and compact status cell. Apply `.is-deployed` when that environment has one or more included component changes and `.is-unchanged` when it has none. Preserve the category headings and list changed components under that environment and category. Test and Staging may include the extra concrete component and operational detail permitted above.
 - Notes section and transparent bordered `gcds-details` methodology block. Preserve semantic headings, `aria-labelledby` / `aria-label` relationships, responsive behavior, and relative document structure.
 
 Load the pinned `@gcds-core/components@1.5.0` stylesheet and module from `https://cdn.design-system.canada.ca/`. A small local style block is allowed only as represented by `examples/report-example.html`. Do not add an external or separate custom stylesheet, and do not replace GCDS components with custom controls or a parallel component system. Do not use `gcds-card` for deployment facts because cards are navigational. Use colon-free report titles.
@@ -141,13 +145,13 @@ Load the pinned `@gcds-core/components@1.5.0` stylesheet and module from `https:
 ### Markdown template
 
 ```
-# CanadaLogin Release Notes
+# CanadaLogin Test Release Notes
 YYYY-MM-DD to YYYY-MM-DD
 
 AI-GENERATED REPORT.
 
 ## Summary
-Two or three plain sentences naming the period's most meaningful deployments and user-facing progress.
+Two or three plain sentences naming the period's most meaningful Test deployments and user-facing progress. Include additional evidence-backed validation detail when it is useful to the Test audience.
 
 ## Deployments
 
@@ -156,26 +160,11 @@ Two or three plain sentences naming the period's most meaningful deployments and
 #### TEST
 - `v1.2.3` unchanged
 
-#### STAGING
-- `v1.2.3` unchanged
-
-#### PROD
-- `v1.2.3` deployed YYYY-MM-DD:
-  - Concrete user-facing change on <page / flow / control>, so <benefit>.
-  - Concrete user-facing change on <page / flow / control>, so <benefit>.
-  - Under the hood: notable non-user-facing change, such as a security-relevant dependency upgrade or a meaningful shared-module refactor.
-
 ### Manage App
 
 #### TEST
 - `v1.2.3` deployed YYYY-MM-DD:
   - Concrete user-facing change on <page / flow / control>, so <benefit>. (Identity-verification work is excluded from this report.)
-
-#### STAGING
-- `v1.2.3` unchanged
-
-#### PROD
-- `v1.2.3` unchanged
 
 ### IBM SaaS Configuration, Branding and Flows
 
@@ -184,42 +173,29 @@ Two or three plain sentences naming the period's most meaningful deployments and
 ##### Flows
 - Sign Up Flow — updated in Test on YYYY-MM-DD: concrete change and benefit.
 
-#### STAGING
-
-##### Themes
-- Sign In — `v1.13.0` deployed YYYY-MM-DD: concrete change on the sign-in or MFA experience, so <benefit>.
-- Password Recovery — `v1.13.0` deployed YYYY-MM-DD: concrete change on the recovery experience, so <benefit>.
-
-##### Flows
-- Sign Up Flow — `v1.13.0` deployed YYYY-MM-DD: concrete change and benefit.
-
-#### PROD
-
-##### Flows
-- Sign Up Flow — `v1.12.0.1` deployed YYYY-MM-DD: concrete change and benefit.
-
 ## Notes
-- The range is inclusive and uses UTC.
+- The range is inclusive and uses UTC. This report covers committed Test evidence only.
 ```
 
-Group each app's environment sections together. Include an Under the hood subsection only when at least one qualifying non-user-facing change exists for that environment. Use the same category grouping for IBM Attributes and Policies when those categories change. Within Policies, combine changed policy components into one `Access policies` summary per the IBM Component Naming rule. Omit empty change categories.
+Group each app's single report-environment status and changes together. Include an Under the hood subsection only when at least one qualifying non-user-facing change exists for that environment. Use the same category grouping for IBM Attributes and Policies when those categories change. Within Policies, combine changed policy components into one `Access policies` summary per the IBM Component Naming rule. Omit empty change categories. Test and Staging reports may contain more distinct, concrete detail than Production reports when supported by the evidence. The Production report keeps the concise Production structure and wording rules and is titled `CanadaLogin Production Release Notes` (no colon).
 
-The production-only report uses the same structure and wording rules but is titled `CanadaLogin Production Release Notes` (no colon), contains only each repository's Production status and Production changes, and includes only Notes about Production activity.
+Render this template once for Test, once for Staging, and once for Production, replacing the environment heading, status, changes, summary, and Notes with evidence for that environment only. Use the `production` filename stem and existing report title for the Production rendering.
 
 ## Quality Checks
 
 Before writing the artifacts, verify:
 
-- All three repositories appear under Deployments and each environment status uses `deployed`, `unchanged`, or `No deployment recorded this period` per Writing Style rules.
+- The selected environment has one dated report in Markdown and HTML for each sub-range. When no environment selector is supplied, three dated report files exist for each sub-range: Test, Staging, and Production, each in Markdown and HTML.
+- All three repositories appear under Deployments in every generated report, and each report contains only its named environment with a status of `deployed`, `unchanged`, or `No deployment recorded this period` per Writing Style rules.
 - Every displayed version begins with `v`; no previous versions are shown.
 - Every user-facing change bullet names a concrete change and, where the diff supports it, its practical benefit — no forbidden generic wording.
-- Every IBM Staging or Production change names the concrete configuration or behavior change; a tag-only line is not sufficient.
+- Every IBM Test, Staging, or Production change names the concrete configuration or behavior change; a tag-only line is not sufficient.
 - Every Under the hood subsection sits inside a specific environment change group and is absent when that environment has no qualifying non-user-facing change.
 - Reverted-and-restored work is present only when a distinct final behavior remains at period end.
 - All deployment claims have dated Git evidence, a dated IBM state-table entry, or an authoritative GitHub record; web-app evidence is resolved from the default branch only.
 - The report contains no commit IDs, PR numbers, commit links, PR links, repository URLs, or wiki revision identifiers.
 - Manage App identity-verification content is absent everywhere in the report.
-- All four dated report files are written to the workspace root with the correct filenames, and the production-only files contain no Test or Staging content.
+- The selected environment's dated report files are written to the workspace root with the correct filenames, and each file contains no other environment's content. With no selector, all six dated report files are present.
 - The HTML reports follow `examples/report-example.html`, load the pinned GCDS assets from the official CDN, and apply `.is-deployed` / `.is-unchanged` accents based on status text rather than environment name.
-- When a cadence was supplied, the sub-ranges together cover the requested range with no gaps or overlaps; each sub-range has its own four dated report files; and the archive lists one entry per sub-range's date range.
-- `index.html` and `.nojekyll` exist at the workspace root; `index.html` preserves the `examples/index-example.html` structure and inline styles, links to every `canadalogin-release-notes-*.html` file currently on disk grouped by date range, and every referenced link resolves to an existing file.
+- When a cadence was supplied, the sub-ranges together cover the requested range with no gaps or overlaps; each sub-range has reports for the selected environment(s); and the archive lists one entry per sub-range's date range.
+- `index.html` exists at the workspace root; it preserves the `examples/index-example.html` structure and inline styles, links to every Test, Staging, and Production `canadalogin-release-notes-*.html` file currently on disk grouped by date range, and every referenced link resolves to an existing file.
