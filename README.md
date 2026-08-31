@@ -9,7 +9,12 @@ Covers the three CanadaLogin source repos: `canadalogin-migration` (Migration Ap
 **Prerequisites** — VS Code with the Dev Containers extension and a local Docker-compatible runtime (Docker Desktop, Colima, Rancher, etc.).
 
 1. Open this repo in VS Code and **Reopen in Container**.
-2. Ask the Copilot agent to run the `canadalogin-release-notes` skill, optionally with a date range (for example, `2026-08-17 to 2026-08-21`), cadence keyword (`weekly`, `bi-weekly`, or `monthly`), and environment (`test`, `staging`, or `prod`). For example, `2026-08-17 to 2026-08-21 staging` generates only the Staging reports, while `2026-08-17 to 2026-08-21` generates reports for all three environments. The environment can also be supplied without a date range, such as `prod`, which uses the default range. Without a cadence it produces one report for the whole range.
+2. Ask the Copilot agent to run the `canadalogin-release-notes` skill. Requests can use natural language or named arguments in any order:
+   - `Generate weekly staging notes for August 2026.`
+   - `Generate prod notes for last month.`
+   - `from=2026-08-01 to=2026-08-31 cadence=bi-weekly environment=test`
+
+   The supported environment values are `test`, `staging`, and `prod`; omitting the environment generates reports for all three. Without a date range, the skill uses the previous fourteen complete UTC calendar days. Without a cadence, it produces one report for the whole range. Ambiguous dates, conflicting arguments, and unsupported environment values require clarification rather than being guessed.
 
 The skill is read-only against every source repo and wiki. It drops the selected environment's Markdown and HTML reports, or all six report files when no environment is specified, plus `index.html` at the repo root:
 
