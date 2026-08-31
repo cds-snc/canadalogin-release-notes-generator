@@ -70,7 +70,7 @@ Use friendly names for IBM components. Keep the technical source identifier avai
 
 ## Scope Exclusions
 
-**Manage App identity verification.** For `canadalogin-user-selfservice-webapp`, exclude all identity-verification features, fixes, refactors, tests, documentation, dependency work, and deployment changes. Do not mention identity verification in summaries, environment sections, or data-gap notes. If a deployment contains only excluded identity-verification work, report the deployment and say `No included user-facing changes`. Apply this exclusion before drafting or consolidating bullets — do not retain a generic localization, dependency, test, or accessibility note when its only supporting changes are identity-verification files.
+**Manage App identity verification.** For `canadalogin-user-selfservice-webapp`, exclude all identity-verification features, fixes, refactors, tests, documentation, dependency work, and deployment changes. Do not mention identity verification in summaries, report content, or data-gap notes. If a deployment contains only excluded identity-verification work, report the deployment and say `No included user-facing changes`. Apply this exclusion before drafting or consolidating bullets — do not retain a generic localization, dependency, test, or accessibility note when its only supporting changes are identity-verification files.
 
 ## Procedure
 
@@ -137,8 +137,8 @@ HTML structure to preserve. The source example may show the complete visual patt
 - Plain report header with a GCDS `h1`, the date on its own line, and `AI-GENERATED REPORT.` on its own line. No hero banner, masthead, decorative banner, or product strip.
 - Summary in `gcds-notice`. Use `gcds-heading` and `gcds-text` for body content. Application sections use the single-column `gcds-grid`. Preserve the blue top accent on each `.app-block` and the IBM `.ibm-block`.
 - Each generated report contains only one environment. The source template's status-grid styling is retained for visual reference; generated output renders only the status cell for its named environment and never includes another environment's status, changes, or summary.
-- All three web-app status cells together in the existing status grid. Apply `.is-deployed` when the status says `deployed`, `.is-unchanged` when it says `unchanged`; use neutral styling for unavailable states. The accent describes the status text, not the environment name — Production is not automatically green.
-- After each app status cell, put included change bullets in the labelled group for the report's environment (`TEST changes`, `STAGING changes`, or `PROD changes`). Never include another environment's status, changes, or summary. Place qualifying Under the hood content inside the same environment change group, after that environment's user-facing bullets; never render it as an app-level subsection detached from the environment.
+- Apply the existing status-grid styling to the selected web-app environment's status cell. Use `.is-deployed` when the status says `deployed`, `.is-unchanged` when it says `unchanged`, and neutral styling for unavailable states. The accent describes the status text, not the environment name; Production is not automatically green.
+- After each app status cell, put included change bullets in the labelled change section for the report's environment (`TEST changes`, `STAGING changes`, or `PROD changes`). Never include another environment's status, changes, or summary. Place qualifying Under the hood content inside that same change section, after the environment's user-facing bullets; never render it as an app-level subsection.
 - IBM section as the same-sized GCDS `h3` as the app titles, with its blue top accent. Include only the report's `.ibm-environment` block and compact status cell. Apply `.is-deployed` when that environment has one or more included component changes and `.is-unchanged` when it has none. Preserve the category headings and list changed components under that environment and category. Test and Staging may include the extra concrete component and operational detail permitted above.
 - Notes section and transparent bordered `gcds-details` methodology block. Preserve semantic headings, `aria-labelledby` / `aria-label` relationships, responsive behavior, and relative document structure.
 
@@ -179,7 +179,7 @@ Two or three plain sentences naming the period's most meaningful Test deployment
 - The range is inclusive and uses UTC. This report covers committed Test evidence only.
 ```
 
-Group each app's single report-environment status and changes together. Include an Under the hood subsection only when at least one qualifying non-user-facing change exists for that environment. Use the same category grouping for IBM Attributes and Policies when those categories change. Within Policies, combine changed policy components into one `Access policies` summary per the IBM Component Naming rule. Omit empty change categories. Test and Staging reports may contain more distinct, concrete detail than Production reports when supported by the evidence. The Production report keeps the concise Production structure and wording rules and is titled `CanadaLogin Production Release Notes` (no colon).
+For each app, place the selected environment's status and changes together. Include an Under the hood subsection only when at least one qualifying non-user-facing change exists for that environment. Use the same category grouping for IBM Attributes and Policies when those categories change. Within Policies, combine changed policy components into one `Access policies` summary per the IBM Component Naming rule. Omit empty change categories. Test and Staging reports may contain more distinct, concrete detail than Production reports when supported by the evidence. The Production report keeps the concise Production structure and wording rules and is titled `CanadaLogin Production Release Notes` (no colon).
 
 Render this template once for Test, once for Staging, and once for Production, replacing the environment heading, status, changes, summary, and Notes with evidence for that environment only. Use the `production` filename stem and existing report title for the Production rendering.
 
@@ -192,7 +192,7 @@ Before writing the artifacts, verify:
 - Every displayed version begins with `v`; no previous versions are shown.
 - Every user-facing change bullet names a concrete change and, where the diff supports it, its practical benefit — no forbidden generic wording.
 - Every IBM Test, Staging, or Production change names the concrete configuration or behavior change; a tag-only line is not sufficient.
-- Every Under the hood subsection sits inside a specific environment change group and is absent when that environment has no qualifying non-user-facing change.
+- Every Under the hood subsection sits inside the selected environment's change section and is absent when that environment has no qualifying non-user-facing change.
 - Reverted-and-restored work is present only when a distinct final behavior remains at period end.
 - All deployment claims have dated Git evidence, a dated IBM state-table entry, or an authoritative GitHub record; web-app evidence is resolved from the default branch only.
 - The report contains no commit IDs, PR numbers, commit links, PR links, repository URLs, or wiki revision identifiers.
