@@ -63,7 +63,7 @@ Write like concise product release notes. Prefer:
 
 Lead with the product area or flow and describe the visible result. Give each bullet a concrete benefit when the evidence supports one. Keep bullets to one sentence where possible. Do not expose commit IDs, PR numbers, repository URLs, wiki revision IDs, raw configuration identifiers, or internal audit details.
 
-Use friendly names: `Migration App`, `Manage App`, `Sign-in, sign-up, recovery flows`, `Sign In`, `Password Recovery`, `Sign Up`, and `Access policies`. Preserve well-known acronyms such as `MFA` and `OTP`. Do not mention identity verification anywhere in a page.
+Use friendly names: `Migration App`, `Manage App`, `Sign-in, sign-up, recovery flows`, `Sign In`, `Password Recovery`, `Sign Up`, and `Access policies`. Preserve well-known acronyms such as `MFA` and `OTP`. Do not include identity verification changes in any What's New page; the feature is still under development and behind a feature flag.
 
 ## Page format and update behavior
 
