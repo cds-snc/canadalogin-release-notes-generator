@@ -26,7 +26,7 @@
 
 ### Migration App - TEST
 `v1.12.13` deployed to Test on August 18, 2026
-- No included user-facing changes.
+- We've made security improvements and updated supporting software to help keep the Migration app secure and reliable.
 
 ### Sign-in, sign-up, recovery flows - TEST
-- No included user-facing changes.
+- We improved the Sign-in experience to provide more descriptive error messages and guidance for users.

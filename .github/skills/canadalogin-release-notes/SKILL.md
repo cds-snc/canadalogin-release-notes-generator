@@ -38,7 +38,7 @@ The pages follow a simple release-notes feed: the newest dated update is at the 
 5. A deployment requires dated evidence: a default-branch environment-file state change, a dated IBM state-table entry, or an authoritative GitHub deployment/release record. A currently present version is not by itself evidence of an in-period deployment.
 6. Use the last committed state immediately before the interval as the comparison baseline. Inspect actual diffs between the baseline and the deployed state, not just changelog subjects or commit titles. Remove changes fully reverted during the interval.
 7. Read the relevant `CHANGELOG.md` entries for deployed versions in the interval as candidate evidence. Use them to find likely user-facing changes and draft concise wording, but verify every candidate against the actual deployed diff and the selected environment's deployment evidence. Ignore changelog-only entries, unreleased versions, reverted changes, and items that are internal or otherwise excluded.
-8. Exclude release-only commits, generated changelog edits, deployment bookkeeping, lock-file-only changes, formatting, comments, routine dependency bumps, and dev tooling. Exclude all Manage App identity-verification work, including related tests, documentation, dependencies, and deployment-only changes.
+8. Exclude release-only commits, generated changelog edits, deployment bookkeeping, lock-file-only changes, formatting, comments, routine dependency bumps, and dev tooling. Include a dependency update when the deployed release updates a significant set of core or runtime dependencies, or when the actual diff confirms security patches or other security enhancements; do not treat a lock-file-only change as sufficient evidence. Exclude all Manage App identity-verification work, including related tests, documentation, dependencies, and deployment-only changes.
 
 ## Environment pages
 
@@ -65,6 +65,11 @@ Lead with the product area or flow and describe the visible result. Give each bu
 
 Use friendly names: `Migration App`, `Manage App`, `Sign-in, sign-up, recovery flows`, `Sign In`, `Password Recovery`, `Sign Up`, and `Access policies`. Preserve well-known acronyms such as `MFA` and `OTP`. Do not include identity verification changes in any What's New page; the feature is still under development and behind a feature flag.
 
+For a qualifying dependency update, add one concise bullet under the affected product area without listing package names. Use security language only when the deployed diff or authoritative release evidence confirms security patches or enhancements. Suitable wording includes:
+
+- `We've updated software dependencies to include the latest security patches, ensuring a safer and more reliable experience.`
+- `Under-the-hood security enhancements and dependency updates to keep your data safe and improve application stability.`
+
 ## Page format and update behavior
 
 Use `examples/whats-new-example.md` and `examples/whats-new-example.html` as templates. The Markdown and HTML for each environment must contain the same factual content.
@@ -84,6 +89,7 @@ The Markdown shape is:
 ### Manage App
 `v1.4.5` deployed to Test on Month D, YYYY
 - We've improved ...
+- We've updated software dependencies to include the latest security patches ...
 
 ### Sign-in, sign-up, recovery flows
 - The Sign In flow now ...
